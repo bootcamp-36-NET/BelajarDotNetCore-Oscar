@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1231
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BelajarDotNetCoreAPI", "BelajarDotNetCore\BelajarDotNetCoreAPI.csproj", "{C275805D-4F52-4FC1-B825-13FC4942C249}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BelajarDotNetCoreClient", "BelajarDotNetCoreClient\BelajarDotNetCoreClient.csproj", "{B963416A-2F5F-4714-8B6B-32798144EE66}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C275805D-4F52-4FC1-B825-13FC4942C249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C275805D-4F52-4FC1-B825-13FC4942C249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C275805D-4F52-4FC1-B825-13FC4942C249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C275805D-4F52-4FC1-B825-13FC4942C249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B963416A-2F5F-4714-8B6B-32798144EE66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B963416A-2F5F-4714-8B6B-32798144EE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B963416A-2F5F-4714-8B6B-32798144EE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B963416A-2F5F-4714-8B6B-32798144EE66}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {272C05ED-6D99-4019-B4F6-5E857EF36461}
+	EndGlobalSection
+EndGlobal

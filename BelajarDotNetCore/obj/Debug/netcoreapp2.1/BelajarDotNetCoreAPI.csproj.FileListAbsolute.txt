@@ -1,0 +1,14 @@
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\bin\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.deps.json
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\bin\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.runtimeconfig.json
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\bin\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.runtimeconfig.dev.json
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\bin\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.dll
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\bin\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.pdb
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.csprojAssemblyReference.cache
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.csproj.CoreCompileInputs.cache
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.RazorAssemblyInfo.cache
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.RazorAssemblyInfo.cs
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.AssemblyInfoInputs.cache
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.AssemblyInfo.cs
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.RazorTargetAssemblyInfo.cache
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.dll
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCore\obj\Debug\netcoreapp2.1\BelajarDotNetCoreAPI.pdb
