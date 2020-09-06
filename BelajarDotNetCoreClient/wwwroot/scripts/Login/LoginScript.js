@@ -23,7 +23,9 @@ function Login() {
             } else {
                 window.location.href = "/";
             }
-        }
+        } else {
+            alertify.error(result.Item1);
+        }    
     });
 }
 
@@ -31,6 +33,7 @@ function validate() {
     var isValid = true;
     if ($('#Email').val().trim() == "") {
         $('#Email').css('border-color', 'Red');
+        alertify.error('Email Cannot Empty');
         isValid = false;
     }
     else {
@@ -38,6 +41,7 @@ function validate() {
     }
     if ($('#Password').val().trim() == "") {
         $('#Password').css('border-color', 'Red');
+        alertify.error('Password Cannot Empty');
         isValid = false;
     }
     else {

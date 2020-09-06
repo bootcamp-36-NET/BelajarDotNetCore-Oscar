@@ -17,6 +17,10 @@ function loadData() {
 }
 
 function Edit() {
+    var check = validate();
+    if (check == false) {
+        return false;
+    }
     var userEditViewModel = {
         UserName: $('#Username').val(),
         OldPassword: $('#OldPassword').val(),
@@ -30,27 +34,51 @@ function Edit() {
         type: "POST",
         dataType: "JSON"
     }).then((result) => {
-        if (result.StatusCode == 200) {
+        if (result.Item2.StatusCode == 200) {
             window.location.href = "/";
+        } else {
+            alertify.error(result.Item1);
         }
     });
 }
 
 function validate() {
     var isValid = true;
-    if ($('#Email').val().trim() == "") {
-        $('#Email').css('border-color', 'Red');
+    if ($('#Username').val().trim() == "") {
+        $('#Username').css('border-color', 'Red');
+        alertify.error('Username Cannot Empty');
         isValid = false;
     }
     else {
-        $('#Email').css('border-color', 'lightgrey');
+        $('#Username').css('border-color', 'lightgrey');
     }
     if ($('#Password').val().trim() == "") {
         $('#Password').css('border-color', 'Red');
+        alertify.error('Username Cannot Empty');
         isValid = false;
     }
     else {
         $('#Password').css('border-color', 'lightgrey');
+    }
+    if ($('#NewPassword').val().trim() == "") {
+        $('#NewPassword').css('border-color', 'Red');
+        alertify.error('NewPassword Cannot Empty');
+        isValid = false;
+    }
+    else {
+        $('#NewPassword').css('border-color', 'lightgrey');
+    }
+    if ($('#ConfirmNewPassword').val().trim() == "") {
+        $('#ConfirmNewPassword').css('border-color', 'Red');
+        alertify.error('ConfirmNewPassword Cannot Empty');
+        isValid = false;
+    } else if ($('#ConfirmNewPassword').val().trim() != $('#Password').val().trim()) {
+        $('#ConfirmNewPassword').css('border-color', 'Red');
+        alertify.error('Password and Confirm New Password must be same !');
+        isValid = false;
+    }
+    else {
+        $('#ConfirmNewPassword').css('border-color', 'lightgrey');
     }
     return isValid;
 }

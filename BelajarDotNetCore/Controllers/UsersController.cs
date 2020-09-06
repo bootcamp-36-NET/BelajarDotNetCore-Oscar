@@ -21,18 +21,14 @@ namespace BelajarDotNetCoreAPI.Controllers
     {
         private readonly MyContext myContext;
         private readonly SendEmailService sendEmailService;
-        //private readonly UserManager<User> userManager;
-        // private readonly SignInManager<User> signInManager;
 
         public UsersController(MyContext myContext, SendEmailService sendEmailService)
         {
             this.myContext = myContext;
             this.sendEmailService = sendEmailService;
-            //this.userManager = userManager;
-            //this.signInManager = signInManager;
         }
 
-        // GET: Users
+        // GET: Users/getAll
         [HttpGet]
         [Route("getAll")]
         public ActionResult GetAllUsers()
@@ -57,12 +53,10 @@ namespace BelajarDotNetCoreAPI.Controllers
         [Route("Details/{id}")]
         public async Task<ActionResult> GetUserById(string id)
         {
-
             var existUser = await this.myContext.Users.FindAsync(id);
             var userRole = this.myContext.UserRoles.Where(Q => Q.UserId == id).Select(Q => Q.RoleId).ToList();
             var role = this.myContext.Roles.Where(Q => userRole.Any(X => X == Q.Id)).ToList();
             var roleName = role.Select(Q => Q.Name).ToList();
-
 
             UserViewModel user = new UserViewModel()
             {
@@ -72,31 +66,13 @@ namespace BelajarDotNetCoreAPI.Controllers
                 RoleName = roleName
             };
             return Ok(user);
-
-            //var user = await userManager.FindByIdAsync(id);
-            ////var userRoles = await userManager.GetRolesAsync(user.Id);
-            //var selectedUser = new UserViewModel
-            //{
-            //    Id = user.Id,
-            //    Email = user.Email,
-            //    UserName = user.UserName
-            //    //RoleName = userRoles.FirstOrDefault()
-            //};
-            //return Ok(selectedUser);
         }
 
-        // GET: Users/{id}
+        // GET: Users/Edit/{id}
         [HttpGet]
         [Route("Edit/{id}")]
         public ActionResult GetEdit(string id)
         {
-            //List<SelectListItem> list = new List<SelectListItem>();
-            //foreach (var role in RoleManager.Roles)
-            //{
-            //    list.Add(new SelectListItem() { Value = role.Name, Text = role.Name });
-            //}
-            //ViewBag.Roles = list;
-
             var existUser = this.myContext.Users.Where(Q => Q.Id == id).FirstOrDefault();
             // var userRole = this.myContext.UserRoles.Where(Q => Q.UserId == id).Select(Q => Q.RoleId).ToList();
             //var role = this.myContext.Roles.Where(Q => userRole.Any(X => X == Q.Id)).ToList();
@@ -112,7 +88,7 @@ namespace BelajarDotNetCoreAPI.Controllers
             return Ok(editedUser);
         }
 
-        // PUT: Users/{id}
+        // PUT: Users/Edit/{id}
         [HttpPut]
         [Route("Edit/{id}")]
         //[ValidateAntiForgeryToken]
@@ -120,75 +96,57 @@ namespace BelajarDotNetCoreAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("failed to update !");
+                return BadRequest("Data is not valid !");
             }
+
             var existUser = await this.myContext.Users.FindAsync(id);
-            var existUserRole = this.myContext.UserRoles.Where(Q => Q.UserId == existUser.Id);
 
             var isValid = BCrypt.Net.BCrypt.Verify(model.OldPassword, existUser.PasswordHash);
             if (!isValid)
             {
-                return BadRequest("failed to update !");
+                return BadRequest("Old Passoword is wrong !");
             }
 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.NewPassword, 12);
             existUser.PasswordHash = hashedPassword;
             existUser.UserName = model.UserName;
-            //existUser.Email = model.Email;
-            //existUser.PhoneNumber = model.Phone;
 
             await this.myContext.SaveChangesAsync();
             return Ok(model);
-
-
-
-            //var user = await userManager.FindByIdAsync(id);
-            //user.UserName = model.UserName;
-            //await userManager.UpdateAsync(user);
-
-            //var userRoles = await UserManager.GetRolesAsync(model.Id);
-            //await UserManager.RemoveFromRoleAsync(model.Id, userRoles.FirstOrDefault());
-            //await UserManager.AddToRoleAsync(model.Id, model.RoleName);
-
-            //return Ok("Edit Success !");
         }
 
-        // //GET: Users/Delete/{id}
-        //[HttpGet]
-        //[Route("delete/{id}")]
-        //public async Task<ActionResult> Delete(string id)
-        //{
-        //    var user = await userManager.FindByIdAsync(id);
-        //    var userRoles = await userManager.GetRolesAsync(id);
-        //    var selectedUser = new UserViewModel
-        //    {
-        //        Id = user.Id,
-        //        Email = user.Email,
-        //        UserName = user.UserName
-        //        //RoleName = userRoles.FirstOrDefault()
-        //    };
-        //    return Ok(selectedUser);
-        //}
+        //GET: Users/Delete/{id}
+        [HttpGet]
+        [Route("delete/{id}")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            var user = await this.myContext.Users.FindAsync(id);
+            var selectedUser = new UserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName
+            };
+            return Ok(selectedUser);
+        }
 
-        // POST: Users/Delete/5
+        // POST: Users/delete/5
         [HttpDelete]
         [Route("delete/{id}")]
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteUser(string id)
         {
             var existUser = this.myContext.Users.Find(id);
+            var userRole = this.myContext.UserRoles.Where(Q => Q.UserId == existUser.Id).ToList();
 
+            this.myContext.UserRoles.RemoveRange(userRole);
             this.myContext.Users.Remove(existUser);
+
             await this.myContext.SaveChangesAsync();
 
             return Ok("Delete Scuccess !");
-
-            //var user = await userManager.FindByIdAsync(id);
-            //await userManager.DeleteAsync(user);
-            //return Ok("Delete Scuccess !");
         }
 
-        //
         // GET: /Account/Register
         [AllowAnonymous]
         [HttpGet]
@@ -198,13 +156,17 @@ namespace BelajarDotNetCoreAPI.Controllers
             return View();
         }
 
-        //
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.ValidationState);
+            }
+
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, 12);
             var role = this.myContext.Roles.Where(Q => Q.Name == "SALES").FirstOrDefault();
             var userId = Guid.NewGuid().ToString();
@@ -240,23 +202,6 @@ namespace BelajarDotNetCoreAPI.Controllers
             this.myContext.UserRoles.Add(userRole);
             await this.myContext.SaveChangesAsync();
             return Ok("Successfully Created");
-
-            ////Register using UserManager
-            //if (ModelState.IsValid)
-            //    {
-            //        var user = new User { UserName = model.Email, Email = model.Email };
-            //        var result = await userManager.CreateAsync(user, model.Password);
-            //        if (result.Succeeded)
-            //        {
-            //            //await signInManager.SignInAsync(user, isPersistent: false);
-            //            return Ok("Register Succeed !");
-            //        }
-            //        //foreach (var error in result.Errors)
-            //        //{
-            //        //    ModelState.AddModelError("", error.Description);
-            //        //}
-            //    }
-            //return BadRequest("Register Error !");
         }
 
         [HttpPost]

@@ -56,13 +56,22 @@ namespace BelajarDotNetCoreClient.Controllers
                 HttpContext.Session.SetString("email", account.Email);
                 HttpContext.Session.SetString("roles", stringRoles);
                 HttpContext.Session.SetString("verified", isVerified);
+
+                var response = Tuple.Create(account, result);
+                return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
             }
-            var response = Tuple.Create(account, result);
-            return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
+            else
+            {
+                var errorMessage = result.Content.ReadAsStringAsync().Result;
+
+                var response = Tuple.Create(errorMessage, result);
+                return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
+            }
+            
+            
         }
 
         [HttpGet]
-        //[Route("edit")]
         // GET: Edit
         public ActionResult Edit()
         {
@@ -93,6 +102,7 @@ namespace BelajarDotNetCoreClient.Controllers
         [HttpPost]
         public IActionResult Edit(UserEditViewModel userEditViewModel)
         {
+            UserViewModel account = null;
             var id = HttpContext.Session.GetString("id");
 
             string stringData = JsonConvert.SerializeObject(userEditViewModel);
@@ -104,17 +114,12 @@ namespace BelajarDotNetCoreClient.Controllers
             {
                 var data = result.Content.ReadAsStringAsync().Result;
                 var json = JsonConvert.DeserializeObject(data).ToString();
-                var account = JsonConvert.DeserializeObject<UserViewModel>(json);
-
-                //var stringRoles = String.Join(",", account.RoleName.ToArray());
+                account = JsonConvert.DeserializeObject<UserViewModel>(json);
 
                 HttpContext.Session.SetString("uname", account.UserName);
-                //HttpContext.Session.SetString("email", account.Email);
-                //HttpContext.Session.SetString("role", stringRoles);
-
             }
-
-            return Json(result, new Newtonsoft.Json.JsonSerializerSettings());
+            var response = Tuple.Create(account, result);
+            return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
         }
 
         public IActionResult Logout()

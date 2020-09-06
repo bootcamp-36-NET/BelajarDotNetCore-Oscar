@@ -2,6 +2,10 @@
 });
 
 function Verify() {
+    var check = validate();
+    if (check == false) {
+        return false;
+    }
     var code = $('#Code').val();
     $.ajax({
         url: "/verify/verify/" + code,
@@ -14,4 +18,19 @@ function Verify() {
             window.location.href = "/";
         }
     });
+}
+
+
+function validate() {
+    var isValid = true;
+    if ($('#Code').val().trim() == "") {
+        $('#Code').css('border-color', 'Red');
+        alertify.error('Code Cannot Empty');
+        isValid = false;
+    }
+    else {
+        $('#Code').css('border-color', 'lightgrey');
+    }
+
+    return isValid;
 }
