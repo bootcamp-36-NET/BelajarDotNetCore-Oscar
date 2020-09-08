@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">DEPARTMENT</h1>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Add New Department</button><br /><br />
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Department Name</th>
+                        <th>CreatedAt</th>
+                        <th>UpdatedAt</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Add Department</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <input type="text" id="Id" name="Id" class="form-control" hidden>
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Name</label>
+                        <input type="text" class="form-control" id="Name" placeholder="Name" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAdd" onclick="return Add();">Add</button>
+                <button type="button" class="btn btn-primary" id="btnUpdate" style="display:none;" onclick="return Update()">Update</button>
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/scripts/Department/DepartmentScript.js"></script>
+    <script src="~/js/sweetalert2@9.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.js"></script>
+}

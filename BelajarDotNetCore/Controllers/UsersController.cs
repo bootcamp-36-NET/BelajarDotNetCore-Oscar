@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using BCrypt.Net;
 using BelajarDotNetCoreAPI.Context;
@@ -11,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BelajarDotNetCoreAPI.Controllers
 {
@@ -19,16 +24,22 @@ namespace BelajarDotNetCoreAPI.Controllers
     [ApiController]
     public class UsersController : Controller
     {
+        public IConfiguration configuration;
         private readonly MyContext myContext;
         private readonly SendEmailService sendEmailService;
+        private readonly TokenService tokenService;
+        
 
-        public UsersController(MyContext myContext, SendEmailService sendEmailService)
+        public UsersController(MyContext myContext, SendEmailService sendEmailService, IConfiguration configuration,TokenService tokenService)
         {
             this.myContext = myContext;
             this.sendEmailService = sendEmailService;
+            this.configuration = configuration;
+            this.tokenService = tokenService;
         }
 
         // GET: Users/getAll
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
         [Route("getAll")]
         public ActionResult GetAllUsers()
@@ -54,8 +65,20 @@ namespace BelajarDotNetCoreAPI.Controllers
         public async Task<ActionResult> GetUserById(string id)
         {
             var existUser = await this.myContext.Users.FindAsync(id);
+            if (existUser == null)
+            {
+                return BadRequest("Retrieving User Data Failed !");
+            }
             var userRole = this.myContext.UserRoles.Where(Q => Q.UserId == id).Select(Q => Q.RoleId).ToList();
+            if (userRole == null)
+            {
+                return BadRequest("Retrieving User Role Data Failed !");
+            }
             var role = this.myContext.Roles.Where(Q => userRole.Any(X => X == Q.Id)).ToList();
+            if (userRole == null)
+            {
+                return BadRequest("Retrieving Role Data Failed !");
+            }
             var roleName = role.Select(Q => Q.Name).ToList();
 
             UserViewModel user = new UserViewModel()
@@ -74,6 +97,10 @@ namespace BelajarDotNetCoreAPI.Controllers
         public ActionResult GetEdit(string id)
         {
             var existUser = this.myContext.Users.Where(Q => Q.Id == id).FirstOrDefault();
+            if (existUser == null)
+            {
+                return BadRequest("Retrieving User Data Failed !");
+            }
             // var userRole = this.myContext.UserRoles.Where(Q => Q.UserId == id).Select(Q => Q.RoleId).ToList();
             //var role = this.myContext.Roles.Where(Q => userRole.Any(X => X == Q.Id)).ToList();
             //var roleName = role.Select(Q => Q.Name).ToList();
@@ -100,6 +127,10 @@ namespace BelajarDotNetCoreAPI.Controllers
             }
 
             var existUser = await this.myContext.Users.FindAsync(id);
+            if (existUser == null)
+            {
+                return BadRequest("Retrieving User Data Failed !");
+            }
 
             var isValid = BCrypt.Net.BCrypt.Verify(model.OldPassword, existUser.PasswordHash);
             if (!isValid)
@@ -111,7 +142,11 @@ namespace BelajarDotNetCoreAPI.Controllers
             existUser.PasswordHash = hashedPassword;
             existUser.UserName = model.UserName;
 
-            await this.myContext.SaveChangesAsync();
+            var result = await this.myContext.SaveChangesAsync();
+            if (result == 0)
+            {
+                return BadRequest("Server Error !");
+            }
             return Ok(model);
         }
 
@@ -121,6 +156,10 @@ namespace BelajarDotNetCoreAPI.Controllers
         public async Task<ActionResult> Delete(string id)
         {
             var user = await this.myContext.Users.FindAsync(id);
+            if (user == null)
+            {
+                return BadRequest("Retrieving User Data Failed !");
+            }
             var selectedUser = new UserViewModel
             {
                 Id = user.Id,
@@ -137,12 +176,24 @@ namespace BelajarDotNetCoreAPI.Controllers
         public async Task<ActionResult> DeleteUser(string id)
         {
             var existUser = this.myContext.Users.Find(id);
+            if (existUser == null)
+            {
+                return BadRequest("Retrieving User Data Failed !");
+            }
             var userRole = this.myContext.UserRoles.Where(Q => Q.UserId == existUser.Id).ToList();
+            if (userRole == null)
+            {
+                return BadRequest("Retrieving User Role Data Failed !");
+            }
 
             this.myContext.UserRoles.RemoveRange(userRole);
             this.myContext.Users.Remove(existUser);
 
-            await this.myContext.SaveChangesAsync();
+            var result = await this.myContext.SaveChangesAsync();
+            if (result == 0)
+            {
+                return BadRequest("Server Error !");
+            }
 
             return Ok("Delete Scuccess !");
         }
@@ -166,9 +217,18 @@ namespace BelajarDotNetCoreAPI.Controllers
             {
                 return BadRequest(ModelState.ValidationState);
             }
+            var isExist = this.myContext.Users.Where(Q => Q.Email == model.Email).Any();
+            if (isExist)
+            {
+                return BadRequest("Email Already Registered !");
+            }
 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, 12);
             var role = this.myContext.Roles.Where(Q => Q.Name == "SALES").FirstOrDefault();
+            if (role == null)
+            {
+                return BadRequest("Default Role Data Not Exist !");
+            }
             var userId = Guid.NewGuid().ToString();
 
             var rand = new Random();
@@ -200,7 +260,11 @@ namespace BelajarDotNetCoreAPI.Controllers
 
             this.myContext.Users.Add(user);
             this.myContext.UserRoles.Add(userRole);
-            await this.myContext.SaveChangesAsync();
+            var result = await this.myContext.SaveChangesAsync();
+            if (result == 0)
+            {
+                return BadRequest("Server Error !");
+            }
             return Ok("Successfully Created");
         }
 
@@ -220,7 +284,15 @@ namespace BelajarDotNetCoreAPI.Controllers
             }
 
             var userRole = this.myContext.UserRoles.Where(Q => Q.UserId == isExist.Id).Select(Q => Q.RoleId).ToList();
+            if (userRole == null)
+            {
+                return BadRequest("Retrieving User Role Data Failed !");
+            }
             var role = this.myContext.Roles.Where(Q => userRole.Any(X => X == Q.Id)).ToList();
+            if (role == null)
+            {
+                return BadRequest("Retrieving Role Data Failed !");
+            }
             var roleName = role.Select(Q => Q.Name).ToList();
 
             UserViewModel user = new UserViewModel()
@@ -231,8 +303,27 @@ namespace BelajarDotNetCoreAPI.Controllers
                 RoleName = roleName,
                 EmailConfirmed = isExist.EmailConfirmed
             };
+            var stringRoles = String.Join(",", user.RoleName.ToArray());
+
+            var claims = new List<Claim> {
+                new Claim("Id",user.Id),
+                new Claim("Role",stringRoles),
+                new Claim("UserName", user.UserName),
+                new Claim("Email", user.Email),
+                new Claim("IsVerified", user.EmailConfirmed.ToString())
+             };
+
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+
+            //var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            //var token = new JwtSecurityToken(configuration["Jwt:Issuer"], configuration["Jwt:Audience"], claims, expires: DateTime.UtcNow.AddMinutes(1), signingCredentials: signIn);
+
+            user.JWToken = this.tokenService.GenerateAccessToken(claims);
 
             return Ok(user);
+
+            //return Ok(user);
         }
 
         [HttpPost]
@@ -246,11 +337,19 @@ namespace BelajarDotNetCoreAPI.Controllers
             }
 
             var user = this.myContext.Users.Where(Q => Q.Id == id).FirstOrDefault();
+            if (user == null)
+            {
+                return BadRequest("Retrieving User Data Failed !");
+            }
 
             user.SecurityStamp = null;
             user.EmailConfirmed = true;
 
-            await this.myContext.SaveChangesAsync();
+            var result = await this.myContext.SaveChangesAsync();
+            if (result == 0)
+            {
+                return BadRequest("Server Error !");
+            }
 
             return Ok("Account Verified !");
         }

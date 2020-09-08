@@ -17,10 +17,10 @@ function Register() {
         type: "POST",
         dataType: "JSON"
     }).then((result) => {
-        if (result.StatusCode == 200) {
+        if (result.Item2.StatusCode == 200) {
             window.location.href = "/login";
         } else {
-            alertify.error(result);
+            alertify.error(result.Item2);
         }
     });
 }

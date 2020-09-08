@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -48,14 +49,21 @@ namespace BelajarDotNetCoreClient.Controllers
                 var json = JsonConvert.DeserializeObject(data).ToString();
                 account = JsonConvert.DeserializeObject<UserViewModel>(json);
 
+
+                var token = new JwtSecurityToken(jwtEncodedString: account.JWToken);
+
                 var stringRoles = String.Join(",", account.RoleName.ToArray());
                 var isVerified = account.EmailConfirmed.ToString().ToLower();
+                var authToken = "Bearer " + account.JWToken;
+                
+                HttpContext.Session.SetString("id", token.Claims.First(c => c.Type == "Id").Value);
+                HttpContext.Session.SetString("uname", token.Claims.First(c => c.Type == "UserName").Value);
+                HttpContext.Session.SetString("email", token.Claims.First(c => c.Type == "Email").Value);
+                HttpContext.Session.SetString("roles", token.Claims.First(c => c.Type == "Role").Value);
+                HttpContext.Session.SetString("verified", token.Claims.First(c => c.Type == "IsVerified").Value);
+                HttpContext.Session.SetString("JWToken", authToken);
 
-                HttpContext.Session.SetString("id", account.Id);
-                HttpContext.Session.SetString("uname", account.UserName);
-                HttpContext.Session.SetString("email", account.Email);
-                HttpContext.Session.SetString("roles", stringRoles);
-                HttpContext.Session.SetString("verified", isVerified);
+                client.DefaultRequestHeaders.Add("Authorization", authToken);
 
                 var response = Tuple.Create(account, result);
                 return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
@@ -67,8 +75,6 @@ namespace BelajarDotNetCoreClient.Controllers
                 var response = Tuple.Create(errorMessage, result);
                 return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
             }
-            
-            
         }
 
         [HttpGet]
@@ -82,7 +88,7 @@ namespace BelajarDotNetCoreClient.Controllers
         {
             var id = HttpContext.Session.GetString("id");
             UserEditViewModel userEditViewModel = null;
-            
+
             var resTask = client.GetAsync("Users/Edit/" + id);
             resTask.Wait();
 
@@ -107,7 +113,7 @@ namespace BelajarDotNetCoreClient.Controllers
 
             string stringData = JsonConvert.SerializeObject(userEditViewModel);
             var contentData = new StringContent(stringData, System.Text.Encoding.UTF8, "application/json");
-            var resTask = client.PutAsync("Users/Edit/"+ id, contentData);
+            var resTask = client.PutAsync("Users/Edit/" + id, contentData);
 
             var result = resTask.Result;
             if (result.IsSuccessStatusCode)

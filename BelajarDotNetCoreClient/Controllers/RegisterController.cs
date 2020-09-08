@@ -30,8 +30,11 @@ namespace BelajarDotNetCoreClient.Controllers
 
             resTask = client.PostAsync("Users", contentData);
             resTask.Wait();
-            var response = resTask.Result;
+            var result = resTask.Result;
 
+            var errorMessage = result.Content.ReadAsStringAsync().Result;
+
+            var response = Tuple.Create(errorMessage, result);
             return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
         }
     }

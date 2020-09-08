@@ -19,7 +19,28 @@ namespace BelajarDotNetCoreAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BelajarDotNetCore.Models.Role", b =>
+            modelBuilder.Entity("BelajarDotNetCoreAPI.Models.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTimeOffset>("CreateDate");
+
+                    b.Property<DateTimeOffset>("DeleteDate");
+
+                    b.Property<bool>("IsDelete");
+
+                    b.Property<string>("Name");
+
+                    b.Property<DateTimeOffset>("UpdateDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tb_m_department");
+                });
+
+            modelBuilder.Entity("BelajarDotNetCoreAPI.Models.Role", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -35,7 +56,7 @@ namespace BelajarDotNetCoreAPI.Migrations
                     b.ToTable("tb_m_role");
                 });
 
-            modelBuilder.Entity("BelajarDotNetCore.Models.User", b =>
+            modelBuilder.Entity("BelajarDotNetCoreAPI.Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -73,7 +94,7 @@ namespace BelajarDotNetCoreAPI.Migrations
                     b.ToTable("tb_m_user");
                 });
 
-            modelBuilder.Entity("BelajarDotNetCore.Models.UserRole", b =>
+            modelBuilder.Entity("BelajarDotNetCoreAPI.Models.UserRole", b =>
                 {
                     b.Property<string>("UserId");
 
@@ -86,14 +107,14 @@ namespace BelajarDotNetCoreAPI.Migrations
                     b.ToTable("tb_tr_userRole");
                 });
 
-            modelBuilder.Entity("BelajarDotNetCore.Models.UserRole", b =>
+            modelBuilder.Entity("BelajarDotNetCoreAPI.Models.UserRole", b =>
                 {
-                    b.HasOne("BelajarDotNetCore.Models.Role", "Role")
+                    b.HasOne("BelajarDotNetCoreAPI.Models.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("BelajarDotNetCore.Models.User", "User")
+                    b.HasOne("BelajarDotNetCoreAPI.Models.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

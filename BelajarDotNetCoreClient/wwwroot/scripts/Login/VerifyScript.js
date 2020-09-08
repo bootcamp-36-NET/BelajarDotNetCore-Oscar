@@ -16,6 +16,8 @@ function Verify() {
     }).then((result) => {
         if (result.StatusCode == 200) {
             window.location.href = "/";
+        } else {
+            alertify.error(result);
         }
     });
 }

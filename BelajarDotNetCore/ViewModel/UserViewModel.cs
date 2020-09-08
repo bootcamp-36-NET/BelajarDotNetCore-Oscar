@@ -16,5 +16,7 @@ namespace BelajarDotNetCoreAPI.Models
         public List<string> RoleName { get; set; }
 
         public bool EmailConfirmed { get; set; }
+
+        public string JWToken { get; set; }
     }
 }
