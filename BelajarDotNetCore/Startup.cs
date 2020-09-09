@@ -70,6 +70,7 @@ namespace BelajarDotNetCoreAPI
             services.AddTransient<SendEmailService>();
             services.AddTransient<TokenService>();
             services.AddScoped<DepartmentRepository>();
+            services.AddScoped<DivisionRepository>();
 
         }
 

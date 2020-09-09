@@ -46,7 +46,7 @@ namespace BelajarDotNetCoreAPI.Repositories
 
         }
 
-        public async Task<List<TEntity>> GetAll()
+        public virtual async Task<List<TEntity>> GetAll()
         {
             var allItem = await this.myContext.Set<TEntity>().Where(Q=>Q.IsDelete == false).ToListAsync();
             //if(!allItem.Count().Equals(0))

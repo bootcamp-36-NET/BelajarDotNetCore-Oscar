@@ -15,6 +15,7 @@ namespace BelajarDotNetCoreAPI.Context
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Division> Divisions { get; set; }
 
         public MyContext(DbContextOptions<MyContext> options) : base(options)
         {
