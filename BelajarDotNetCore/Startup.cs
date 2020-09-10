@@ -71,6 +71,7 @@ namespace BelajarDotNetCoreAPI
             services.AddTransient<TokenService>();
             services.AddScoped<DepartmentRepository>();
             services.AddScoped<DivisionRepository>();
+            services.AddScoped<EmployeeRepository>();
 
         }
 
@@ -93,7 +94,7 @@ namespace BelajarDotNetCoreAPI
             }
             else
             {
-                //app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 

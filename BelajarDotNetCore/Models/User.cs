@@ -13,5 +13,6 @@ namespace BelajarDotNetCoreAPI.Models
     public class User : IdentityUser
     {
         public ICollection<UserRole> UserRoles { get; set; }
+        public Employee Employee { get; set; }
     }
 }

@@ -43,7 +43,6 @@ namespace BelajarDotNetCoreAPI.Repositories
             this.myContext.Entry(item).State = EntityState.Modified;
             var result = await this.myContext.SaveChangesAsync();
             return result;
-
         }
 
         public virtual async Task<List<TEntity>> GetAll()

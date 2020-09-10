@@ -21,7 +21,7 @@ function Login() {
             if (!result.Item1.EmailConfirmed) {
                 window.location.href = "/verify";
             } else {
-                window.location.href = "/";
+                window.location.href = "/UserProfile";
             }
         } else {
             alertify.error(result.Item1);

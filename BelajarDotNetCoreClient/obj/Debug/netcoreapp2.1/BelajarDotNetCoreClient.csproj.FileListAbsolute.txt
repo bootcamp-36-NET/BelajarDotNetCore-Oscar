@@ -38,3 +38,5 @@ C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCoreClient\obj\Debu
 C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCoreClient\obj\Debug\netcoreapp2.1\BelajarDotNetCoreClient.pdb
 C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCoreClient\obj\Debug\netcoreapp2.1\Razor\Views\Departments\Index.g.cshtml.cs
 C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCoreClient\obj\Debug\netcoreapp2.1\Razor\Views\Divisions\Index.g.cshtml.cs
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCoreClient\obj\Debug\netcoreapp2.1\Razor\Views\UserProfile\Index.g.cshtml.cs
+C:\Users\Geraldy\source\repos\BelajarDotNetCore\BelajarDotNetCoreClient\obj\Debug\netcoreapp2.1\Razor\Views\Employees\Index.g.cshtml.cs

@@ -25,7 +25,7 @@ function loadData() {
             {
                 data: "CreateDate",
                 render: function (jsonDate) {
-                    var date = moment(jsonDate).format("DD MMMM YYYY");
+                    var date = moment(jsonDate).format("DD MMMM YYYY hh:mm");
                     return date;
                 }
             },
@@ -33,7 +33,7 @@ function loadData() {
                 data: "UpdateDate",
                 render: function (jsonDate) {
                     if (!moment(jsonDate).isBefore('1000-01-01')) {
-                        var date = moment(jsonDate).format("DD MMMM YYYY");
+                        var date = moment(jsonDate).format("DD MMMM YYYY hh:mm");
                         return date;
                     }
                     return "Not Updated Yet";
@@ -46,7 +46,9 @@ function loadData() {
                     return '<Button class="btn btn-warning" onclick="return GetById(' + row.Id + ')">Update</button>'
                         + '&nbsp;'
                         + '<Button class="btn btn-danger" onclick="return Delete(' + row.Id + ')">Delete</button>'
-                }
+                },
+                orderable: false,
+                searchable: false
             }
         ],
         "columnDefs": [{

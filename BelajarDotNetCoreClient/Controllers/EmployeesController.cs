@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using BelajarDotNetCoreAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace BelajarDotNetCoreClient.Controllers
 {
-    public class DivisionsController : Controller
+    public class EmployeesController : Controller
     {
         readonly HttpClient client = new HttpClient
         {
@@ -36,84 +35,61 @@ namespace BelajarDotNetCoreClient.Controllers
             var isValid = roles.Where(Q => Q == "ADMIN").Any();
             if (!isValid)
             {
-                return Redirect("/");
+                return Redirect("/Userprofile");
             }
             return View();
         }
 
-        public JsonResult LoadAllData()
+        public IActionResult LoadEmployee()
         {
-            IEnumerable<Division> divisions = null;
+            IEnumerable<Employee> employees = null;
 
             var authToken = HttpContext.Session.GetString("JWToken");
             client.DefaultRequestHeaders.Add("Authorization", authToken);
 
-            var resTask = client.GetAsync("Divisions");
+            var resTask = client.GetAsync("Employees");
             resTask.Wait();
 
             var result = resTask.Result;
 
             if (result.IsSuccessStatusCode)
             {
-                var readTask = result.Content.ReadAsAsync<IList<Division>>();
+                var readTask = result.Content.ReadAsAsync<IList<Employee>>();
                 readTask.Wait();
-                divisions = readTask.Result;
+                employees = readTask.Result;
             }
 
-            return Json(divisions, new Newtonsoft.Json.JsonSerializerSettings());
+            return Json(employees, new Newtonsoft.Json.JsonSerializerSettings());
         }
 
-        public JsonResult GetById(int id)
+        public IActionResult GetById(string id)
         {
-            Division division = null;
+            Employee employees = null;
 
             var authToken = HttpContext.Session.GetString("JWToken");
             client.DefaultRequestHeaders.Add("Authorization", authToken);
 
-            var resTask = client.GetAsync("Divisions/" + id);
+            var resTask = client.GetAsync("Employees/" + id);
             resTask.Wait();
 
             var result = resTask.Result;
             if (result.IsSuccessStatusCode)
             {
-                var readTask = result.Content.ReadAsAsync<Division>();
+                var readTask = result.Content.ReadAsAsync<Employee>();
                 readTask.Wait();
 
-                division = readTask.Result;
+                employees = readTask.Result;
             }
 
-            return Json(division, new Newtonsoft.Json.JsonSerializerSettings());
+            return Json(employees, new Newtonsoft.Json.JsonSerializerSettings());
         }
 
-        public JsonResult AddOrUpdate(Division division)
-        {
-            Task<HttpResponseMessage> resTask;
-            string stringData = JsonConvert.SerializeObject(division);
-            var contentData = new StringContent(stringData, System.Text.Encoding.UTF8, "application/json");
-
-            var authToken = HttpContext.Session.GetString("JWToken");
-            client.DefaultRequestHeaders.Add("Authorization", authToken);
-
-            if (division.Id == 0)
-            {
-                resTask = client.PostAsync("Divisions", contentData);
-            }
-            else
-            {
-                resTask = client.PutAsync("Divisions/" + division.Id, contentData);
-            }
-            resTask.Wait();
-            var response = resTask.Result;
-
-            return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
-        }
-
-        public JsonResult Delete(int id)
+        public JsonResult Delete(string id)
         {
             var authToken = HttpContext.Session.GetString("JWToken");
             client.DefaultRequestHeaders.Add("Authorization", authToken);
 
-            var resTask = client.DeleteAsync("Divisions/" + id);
+            var resTask = client.DeleteAsync("Employees/" + id);
             resTask.Wait();
             var response = resTask.Result;
 

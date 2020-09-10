@@ -19,6 +19,25 @@ namespace BelajarDotNetCoreClient.Controllers
 
         public IActionResult Index()
         {
+            if (!HttpContext.Session.IsAvailable)
+            {
+                return Redirect("/login");
+            }
+            if (HttpContext.Session.GetString("verified") == "false")
+            {
+                return Redirect("/verify");
+            }
+            if (HttpContext.Session.GetString("roles") == null)
+            {
+                return Redirect("/login");
+            }
+            var stringRole = HttpContext.Session.GetString("roles");
+            var roles = stringRole.Split(',').ToList();
+            var isValid = roles.Where(Q => Q == "ADMIN").Any();
+            if (!isValid)
+            {
+                return Redirect("/");
+            }
             return View();
         }
 

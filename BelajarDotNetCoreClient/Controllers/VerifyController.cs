@@ -27,9 +27,15 @@ namespace BelajarDotNetCoreClient.Controllers
         public IActionResult Verify(string code)
         {
             var id = HttpContext.Session.GetString("id");
+
             var contentData = new StringContent(code, System.Text.Encoding.UTF8, "application/json");
 
+
+            var authToken = HttpContext.Session.GetString("JWToken");
+            client.DefaultRequestHeaders.Add("Authorization", authToken);
+
             var resTask = client.PostAsync("Users/Verify/" + id, contentData);
+            resTask.Wait();
 
             var result = resTask.Result;
             if (result.IsSuccessStatusCode)

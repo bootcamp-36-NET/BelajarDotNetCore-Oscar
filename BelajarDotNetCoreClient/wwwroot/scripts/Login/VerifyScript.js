@@ -15,7 +15,7 @@ function Verify() {
         dataType: "JSON"
     }).then((result) => {
         if (result.StatusCode == 200) {
-            window.location.href = "/";
+            window.location.href = "/UserProfile";
         } else {
             alertify.error(result);
         }

@@ -60,6 +60,7 @@ namespace BelajarDotNetCoreAPI.Controllers
         }
 
         // GET: Users/Details/{id}
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
         [Route("Details/{id}")]
         public async Task<ActionResult> GetUserById(string id)
@@ -238,7 +239,7 @@ namespace BelajarDotNetCoreAPI.Controllers
 
             User user = new User()
             {
-                Id = userId,
+                Id = model.Id,
                 UserName = model.Email,
                 Email = model.Email,
                 NormalizedEmail = model.Email.ToUpper(),
@@ -254,7 +255,7 @@ namespace BelajarDotNetCoreAPI.Controllers
 
             UserRole userRole = new UserRole()
             {
-                UserId = userId,
+                UserId = model.Id,
                 RoleId = role.Id
             };
 
@@ -328,7 +329,7 @@ namespace BelajarDotNetCoreAPI.Controllers
 
         [HttpPost]
         [Route("verify/{id}")]
-        public async Task<IActionResult> Verify(string id, string code)
+        public async Task<IActionResult> Verify(string id, [FromBody]string code)
         {
             var isTrue = this.myContext.Users.Where(Q => Q.SecurityStamp == code).Any();
             if (!isTrue)

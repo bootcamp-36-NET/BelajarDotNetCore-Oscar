@@ -4,7 +4,7 @@
 
 function loadData() {
     $.ajax({
-        url: "/Login/GetEdit",
+        url: "/UserProfile/GetById",
         data: "",
         cache: false,
         type: "GET",
