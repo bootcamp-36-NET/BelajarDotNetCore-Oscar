@@ -4,14 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using BelajarDotNetCoreAPI.Base;
 using BelajarDotNetCoreAPI.Models;
+using BelajarDotNetCoreAPI.Report;
 using BelajarDotNetCoreAPI.Repositories.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 
 namespace BelajarDotNetCoreAPI.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
 
     [Route("api/[controller]")]
     [ApiController]
@@ -19,7 +21,7 @@ namespace BelajarDotNetCoreAPI.Controllers
     {
         private readonly DivisionRepository _divisionRepository;
 
-        public DivisionsController(DivisionRepository divisionRepository):base(divisionRepository)
+        public DivisionsController(DivisionRepository divisionRepository) : base(divisionRepository)
         {
             this._divisionRepository = divisionRepository;
         }
@@ -40,5 +42,24 @@ namespace BelajarDotNetCoreAPI.Controllers
             }
             return BadRequest("Data Failed to Edit !");
         }
+
+        [HttpGet]
+        [Route("PrintPdf")]
+        public async Task<ActionResult> PrintReport()
+        {
+            DivisionReport divisionReport = new DivisionReport();
+            var allData = await GetAllReport();
+            byte[] fileStream = divisionReport.PrepareReport(allData);
+            var stringContent = Convert.ToBase64String(fileStream);
+            return Ok(stringContent);
+        }
+
+        public async Task<List<Division>> GetAllReport()
+        {
+            var allItem = await _divisionRepository.GetAll();
+            return allItem;
+        }
+
+
     }
 }

@@ -7,7 +7,17 @@
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">DIVISION</h1>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Add New Division</button><br /><br />
+<div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
+    <div class="btn-group mr-2" role="group" aria-label="First group">
+        <button type="button" class="btn btn-primary border border-dark" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">ADD NEW DIVISION</button>
+    </div>
+    <div class="btn-group mr-2" role="group" aria-label="Second group">
+        <button type="button" class="btn btn-primary border border-dark" onclick="printPdf();">PRINT PDF</button>
+        @*<button type="button" class="btn btn-primary border border-dark" onclick="printExcel()">PRINT EXCEL</button>*@
+        <a asp-action="printExcel" class="btn btn-primary border border-dark" data-toggle="tooltip" title="Export Excel">PRINT EXCEL</a>
+    </div>
+</div>
+
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
@@ -18,7 +28,7 @@
                     <tr>
                         <th>No.</th>
                         <th>Division Name</th>
-                        <th>Department</th>
+                        <th>Department<br></th>
                         <th>CreatedAt</th>
                         <th>UpdatedAt</th>
                         <th>Action</th>

@@ -20,6 +20,11 @@ namespace BelajarDotNetCoreAPI.Repositories.Data
 
         public override async Task<List<Division>> GetAll()
         {
+            var data = await this._myContext.Divisions.Include("Department").Where(q => q.IsDelete == false).GroupBy(q => q.Department.Name).Select(q => new
+            {
+                GroupId = q.Key,
+                Count = q.Count()
+            }).ToListAsync();
             //var departments = await this._myContext.Departments.ToListAsync();
             var allItem = await this._myContext.Divisions.Include("Department").Where(q => q.IsDelete == false).ToListAsync();
 

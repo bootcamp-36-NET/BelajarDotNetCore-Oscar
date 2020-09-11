@@ -7,6 +7,7 @@ using BelajarDotNetCoreAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 
 namespace BelajarDotNetCoreClient.Controllers
 {
@@ -118,6 +119,89 @@ namespace BelajarDotNetCoreClient.Controllers
             var response = resTask.Result;
 
             return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
+        }
+
+        public ActionResult PrintPdf()
+        {
+            var response = "";
+            var authToken = HttpContext.Session.GetString("JWToken");
+            client.DefaultRequestHeaders.Add("Authorization", authToken);
+
+            var resTask = client.GetAsync("Divisions/PrintPdf");
+            resTask.Wait();
+            var result = resTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var content = result.Content.ReadAsStringAsync();
+                resTask.Wait();
+
+                response = content.Result;
+            }
+
+            return Json(response, new Newtonsoft.Json.JsonSerializerSettings());
+        }
+
+
+        public IActionResult PrintExcel()
+        {
+            var comlumHeadrs = new string[]
+            {
+                "No.",
+                "Department Name",
+                "Division Name",
+                "Created At"
+            };
+
+            byte[] response;
+
+            using (var package = new ExcelPackage())
+            {
+                // add a new worksheet to the empty workbook
+
+                var worksheet = package.Workbook.Worksheets.Add("Divisions"); //Worksheet name
+                using (var cells = worksheet.Cells[1, 1, 1, 7]) //(1,1) (1,5)
+                {
+                    cells.Style.Font.Bold = true;
+                }
+
+                //First add the headers
+                for (var i = 0; i < comlumHeadrs.Count(); i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = comlumHeadrs[i];
+                }
+
+                //Add values
+                var j = 2;
+
+                IEnumerable<Division> divisions = null;
+
+                var authToken = HttpContext.Session.GetString("JWToken");
+                client.DefaultRequestHeaders.Add("Authorization", authToken);
+
+                var resTask = client.GetAsync("Divisions");
+                resTask.Wait();
+
+                var result = resTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<Division>>();
+                    readTask.Wait();
+                    divisions = readTask.Result;
+                }
+
+                foreach (var division in divisions)
+                {
+                    worksheet.Cells["A" + j].Value = j - 1;
+                    worksheet.Cells["B" + j].Value = division.Name;
+                    worksheet.Cells["C" + j].Value = division.Department.Name;
+                    worksheet.Cells["D" + j].Value = division.CreateDate.ToString("dd-MMMM-yyyy HH:mm");
+                    j++;
+                }
+                response = package.GetAsByteArray();
+            }
+
+            return File(response, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Division.xlsx");
         }
     }
 }

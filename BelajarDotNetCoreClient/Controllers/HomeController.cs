@@ -7,11 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using BelajarDotNetCoreClient.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using BelajarDotNetCoreAPI.ViewModel.ChartViewModel;
+using System.Net.Http;
 
 namespace BelajarDotNetCoreClient.Controllers
 {
     public class HomeController : Controller
     {
+        readonly HttpClient client = new HttpClient
+        {
+            BaseAddress = new Uri("https://localhost:44321/api/")
+        };
+
         public IActionResult Index()
         {
             if (!HttpContext.Session.IsAvailable)
@@ -39,6 +46,8 @@ namespace BelajarDotNetCoreClient.Controllers
 
         }
 
+
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -56,6 +65,52 @@ namespace BelajarDotNetCoreClient.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public IActionResult LoadPie()
+        {
+            IEnumerable<PieChartVM> pie = null;
+            //var authToken = HttpContext.Session.GetString("JWToken");
+            //client.DefaultRequestHeaders.Add("Authorization", authToken);
+            var resTask = client.GetAsync("charts/pie");
+            resTask.Wait();
+
+            var result = resTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var readTask = result.Content.ReadAsAsync<List<PieChartVM>>();
+                readTask.Wait();
+                pie = readTask.Result;
+            }
+            else
+            {
+                pie = Enumerable.Empty<PieChartVM>();
+                ModelState.AddModelError(string.Empty, "Server Error try after sometimes.");
+            }
+            return Json(pie);
+        }
+
+        public IActionResult LoadBar()
+        {
+            IEnumerable<PieChartVM> bar = null;
+            //var authToken = HttpContext.Session.GetString("JWToken");
+            //client.DefaultRequestHeaders.Add("Authorization", authToken);
+            var resTask = client.GetAsync("charts/pie");
+            resTask.Wait();
+
+            var result = resTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var readTask = result.Content.ReadAsAsync<List<PieChartVM>>();
+                readTask.Wait();
+                bar = readTask.Result;
+            }
+            else
+            {
+                bar = Enumerable.Empty<PieChartVM>();
+                ModelState.AddModelError(string.Empty, "Server Error try after sometimes.");
+            }
+            return Json(bar);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
